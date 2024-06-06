@@ -1,0 +1,22 @@
+{
+  "name": "sistarefa",
+  "version": "1.0.0",
+  "description": "O SISTarefas é um sistema de controle de tarefas. Cada projeto tem um gerente do projeto e um conjunto de tarefas associados a ele. Cada tarefa tem usuários associados a ela. Ele tem um conjunto de usuários que podem ser de três tipos de perfis: Administrador, gerentes e comuns. Os administradores podem cadastrar e alterar qualquer item do sistema. Gerentes podem criar projetos e tarefas. Usuário podem emitir relatórios dos projetos que estão associados. Tanto projetos quanto tarefas podem ser criados sem o gerente e sem usuários.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "jest": "^29.7.0",
+    "moment": "^2.30.1",
+    "prisma": "^5.15.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

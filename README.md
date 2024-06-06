@@ -10,3 +10,9 @@ O SISTarefas é um sistema de controle de tarefas. Cada projeto tem um gerente d
 - Ferramentas : Prisma ; Swagger
 - Banco de Dados: PostGreSQL
 - Controle de Versão: Git
+
+
+### Configuração do Ambiente
+- definir uma porta para rodar o servidor
+- instalar todas as dependencias
+
