@@ -9,6 +9,73 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+
+enum nivel_de_acesso{
+
+  comum
+  administrador 
+  gerente
+}
+
+model tbl_usuarios{
+
+  Id Int @id @default(autoincrement())
+  Nome String 
+  Senha String @unique 
+  Usuario_de_Acesso String @unique
+  Email String @unique
+  Data_Criacao DateTime @default(now())
+  Nivel_Acesso nivel_de_acesso
+  Data_Modificacao DateTime @updatedAt  
+  Projeto tbl_projetos[]
+  Tarefas tbl_usuariosTarefas[]
+
+}
+
+model tbl_projetos{
+
+  Id Int @id @default(autoincrement())
+  Nome String @unique 
+  Data_Inicio DateTime 
+  Usuario_Gerente tbl_usuarios @relation(fields: [Id_Gerente], references: [Id])
+  Id_Gerente Int
+  Tarefas tbl_tarefas[]
+  
+}
+
+
+// Definição do modelo Tarefa
+model tbl_tarefas {
+  
+  Id Int @id @default(autoincrement())
+  Data_Criacao DateTime @default(now()) 
+  Data_Modificacao DateTime @updatedAt
+  Data_Inicio DateTime
+  Data_Termino DateTime 
+  Projeto_Associada tbl_projetos @relation(fields: [Id_Projeto], references: [Id])
+  Id_Projeto Int
+  Usuarios tbl_usuariosTarefas[]
+  Descricao_Tarefa String 
+  Concluida Boolean @default(false)
+
+}
+
+enum funcao_usuario{
+  responsavel
+  participante
+}
+
+model tbl_usuariosTarefas{
+  Usuario tbl_usuarios @relation(fields: [Id_Usuario], references: [Id])
+  Id_Usuario Int
+  Tarefa tbl_tarefas @relation(fields: [Id_Tarefa], references: [Id])
+  Id_Tarefa Int
+  Funcao funcao_usuario 
+
+  @@id([Id_Usuario, Id_Tarefa])
+
 }

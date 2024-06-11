@@ -2,8 +2,10 @@
 import swaggerUi from "swagger-ui-express"
 import swaggerSpec from "./swagger.js"
 import path  from 'path'
+import express from 'express'
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 app.set('view engine', 'ejs');
 const __dirname  =  path.dirname('index.js');
