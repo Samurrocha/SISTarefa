@@ -88,8 +88,8 @@ class TarefasController {
         }
 
         const tarefa = await Prisma.tbl_tarefas.findUnique({
-            where:{
-                Id:id
+            where: {
+                Id: id
             }
         })
 
@@ -97,7 +97,7 @@ class TarefasController {
             return res.status(400).send(`não existe tarefa com este 'Id'`)
         }
 
-        const colunasTarefas = [ "Data_Inicio", "Data_Termino", "Id_Projeto","Descricao_Tarefa","Concluida"]
+        const colunasTarefas = ["Data_Inicio", "Data_Termino", "Id_Projeto", "Descricao_Tarefa", "Concluida"]
 
         if (!colunasTarefas.includes(coluna)) {
 
@@ -133,17 +133,17 @@ class TarefasController {
             })
 
             res.send(updateTask)
-        } catch (error) { `erro ao tentar atualiza o ${coluna} para ${valor}`}
+        } catch (error) { `erro ao tentar atualiza o ${coluna} para ${valor}` }
     }
 
 
 
-    async delete(req,res) {
+    async delete(req, res) {
         const id = parseInt(req.body.id);
 
         const tarefa = await Prisma.tbl_tarefas.findUnique({
-            where:{
-                Id:id
+            where: {
+                Id: id
             }
         })
 
@@ -161,6 +161,136 @@ class TarefasController {
             res.send(delTask)
         } catch (error) { `erro  do servidor a tentar  deletar tarefa de id = ${id}` }
     }
+
+
+    async relatorio(req, res) {
+
+        const usuario = req.query.Usuario
+        const usuarioDeAcesso = req.query.UsuarioDeAcesso
+        const usuarioEmail = req.query.UsuarioEmail
+        let idProjeto = req.query.IdProjeto
+        let concluida = req.query.Concluida
+        let dataCriacaoInicio = req.query.DataCriacaoInicio
+        let dataCriacaoFim = req.query.DataCriacaoFim
+
+        if (idProjeto) {
+            idProjeto = parseInt(idProjeto)
+        }
+
+        if (concluida === "true") {
+            concluida = Boolean("true")
+        } else if(concluida==="false"){ concluida = Boolean("") }
+
+
+        function isValidISO8601(dateString) {
+            return moment(dateString, moment.ISO_8601, true).isValid();
+        }
+
+        if (dataCriacaoInicio) {
+            if (!isValidISO8601(dataCriacaoInicio)) {
+                return res.status(400).send(`data de modificacao Inicial no formato incorreto`);
+            }
+
+            dataCriacaoInicio = new Date(dataCriacaoInicio)
+        }
+
+
+        if (dataCriacaoFim) {
+            if (!isValidISO8601(dataCriacaoFim)) {
+                return res.status(400).send(`data de modificacao final no formato incorreto`);
+            }
+
+            dataCriacaoFim = new Date(dataCriacaoFim)
+        }
+
+        
+        if (usuario || usuarioDeAcesso || usuarioEmail) {
+
+            const filtroUsuario = await Prisma.tbl_usuarios.findMany({
+                where: {
+                    AND: [
+
+                        {
+                            Nome: {
+                                contains: usuario
+                            }
+                        },
+
+                        {
+                            Email: {
+                                contains: usuarioEmail
+                            }
+                        },
+
+                        {
+                            Usuario_de_Acesso: {
+                                contains: usuarioDeAcesso
+                            }
+                        }
+                    ]
+                }
+            })
+
+
+            var idUsuarios = []
+            filtroUsuario.forEach(element => {
+                idUsuarios.push(element.Id)
+            });
+            
+
+            const filtroUserTask = await Prisma.tbl_usuariosTarefas.findMany({
+                where: {
+                    Id_Usuario: { in: idUsuarios }
+                }
+            })
+
+            var idTarefas = []
+
+            filtroUserTask.forEach(element => {
+                idTarefas.push(element.Id_Tarefa)
+            });
+
+        }
+
+
+        const filtro = await Prisma.tbl_tarefas.findMany({
+            where: {
+                AND: [
+
+                    {
+                        Id: {
+                            in: idTarefas,             // Exemplo de lista de IDs de tarefas
+                        }
+                    },
+
+                    { Id_Projeto: idProjeto },
+
+                    {
+                        Data_Criacao: {
+                            gt: dataCriacaoInicio,
+                            lt: dataCriacaoFim
+                        }
+                    },
+
+                    { Concluida: concluida }
+
+                ]
+            }
+        })
+
+       
+        if (filtro.length == 0) {
+            return res.status(400).send("não foram encontradas tarefas com estes filtros")
+        }
+
+
+
+
+        res.render('relatorioTarefa', { filtroTarefa: filtro })
+
+
+    }
+
 
 
 }

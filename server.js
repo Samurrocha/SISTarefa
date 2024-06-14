@@ -8,9 +8,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 app.set('view engine', 'ejs');
-const __dirname  =  path.dirname('index.js');
-
-app.set('views', path.join(__dirname, './src/views'));
+const paginaInicio  =  path.dirname('index');
+const relatorioUsuario  =  path.dirname('relatorioUsuario');
+app.set('views', path.join(paginaInicio, './src/views'));
+app.set('views', path.join(relatorioUsuario,'./src/views'))
 
 
 //configuração do app

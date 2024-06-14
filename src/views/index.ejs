@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem Vindo</title>
-</head>
-<body>
-    
-    <h1>Olá <%=name%></h1>
+<%- include('includes/header') %>
 
-    <h2>Abaixo está o link pra pagina de documentação </h2>
-    <a href="/api-docs"> Documentação Swagger</a>
+    <title>Pagina de inicio</title>
+    </head>
 
-    <p>A Página foi renderizada ás <%=dateTime%></p>
+    <body>
 
-</body>
-</html>
+        <h1>Olá <%=name%>
+        </h1>
+
+        <h2>Abaixo está o link pra pagina de documentação </h2>
+        <a href="/api-docs"> Documentação Swagger</a>
+
+        <p>A Página foi renderizada ás <%=dateTime%>
+        </p>
+
+
+        <%- include('includes/footer') %>

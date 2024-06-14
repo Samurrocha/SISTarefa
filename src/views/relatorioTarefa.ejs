@@ -1,0 +1,79 @@
+<%- include('includes/header') %>
+
+    <title>Relatorio de Tarefas</title>
+    </head>
+
+    <body>
+
+        <h1 style="font-size: 40px;">Relatorio De Tarefas</h1>
+
+        <table border=""
+            style="border: 5px solid black;border-collapse: collapse; height: 400px;width: 100%; margin-top: 60px; ">
+            <thead style="text-align: center;">
+                <tr style="font-size: 25px;">
+                    <th>Id</th>
+                    <th>Descricao_Tarefa</th>
+                    <th>Data_Criacao</th>
+                    <th>Data_Modificacao</th>
+                    <th>Data_Inicio</th>
+                    <th>Data_Termino</th>
+                    <th>Id_Projeto</th>                  
+                    <th>Concluida</th>
+                </tr>
+            </thead>
+
+            <tbody style="text-align: center;">
+                <%filtroTarefa.forEach(element=> {
+                    %><tr style="font-size: 20px;">
+                        <td>
+                            <%= element.Id %>
+                        </td>
+                        <td>
+                            <%= element.Descricao_Tarefa %>
+                        </td>
+                        <td>
+                            <%= element.Data_Criacao %>
+                        </td>
+                        <td>
+                            <%= element.Data_Modificacao %>
+                        </td>
+                        <td>
+                            <%= element.Data_Inicio %>
+                        </td>
+                        <td>
+                            <%= element.Data_Termino %>
+                        </td>
+                        <td>
+                            <%= element.Id_Projeto %>
+                        </td>
+                        <td>
+                            <%= element.Concluida %>
+                        </td>
+                    </tr>
+                    <% }); %>
+
+
+
+
+            </tbody>
+
+
+
+
+
+
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <%- include('includes/footer') %>

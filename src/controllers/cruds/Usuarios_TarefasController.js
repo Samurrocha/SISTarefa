@@ -184,6 +184,7 @@ class Usuarios_TarefasController {
     }
 
 
+
 }
 
 export default new Usuarios_TarefasController();

@@ -31,6 +31,7 @@ routes.post("/usuario", usuariosController.create);
 routes.get("/usuario",  usuariosController.read);
 routes.put("/usuario",  usuariosController.update);
 routes.delete("/usuario",  usuariosController.delete);
+routes.get("/usuario/relatorio", usuariosController.relatorio)
 
 
 
@@ -63,6 +64,7 @@ routes.post("/tarefa", TarefasController.create);
 routes.get("/tarefa",  TarefasController.read);
 routes.put("/tarefa",  TarefasController.update);
 routes.delete("/tarefa",  TarefasController.delete);
+routes.get("/tarefa/relatorio",  TarefasController.relatorio);
 
 
 

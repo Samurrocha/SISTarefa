@@ -69,7 +69,7 @@ class UsuariosController {
     async update(req, res) {
 
         if (Prisma.tbl_usuarios) {
-            
+
         }
 
         const id = parseInt(req.body.id)
@@ -91,8 +91,8 @@ class UsuariosController {
         }
 
         const userId = await Prisma.tbl_usuarios.findUnique({
-            where:{
-                Id:id
+            where: {
+                Id: id
             }
         })
 
@@ -201,6 +201,99 @@ class UsuariosController {
         } catch (error) { res.status(500).send(`Erro do servidor ao deletar usuário: ${error.message}`) };
 
     }
+
+
+    async relatorio(req, res) {
+
+        const nome = req.query.Nome
+        const email = req.query.Email
+        const nomeUsuario = req.query.NomeUsuario
+        let dataCriacaoInicio = req.query.DataCriacaoInicio
+        let dataCriacaoFim = req.query.DataCriacaoFim
+        let dataModificacaoInicio = req.query.DataModificacaoInicio
+        let dataModificacaoFim = req.query.DataModificacaoFim
+
+        function isValidISO8601(dateString) {
+            return moment(dateString, moment.ISO_8601, true).isValid();
+        }
+
+
+        if (dataCriacaoInicio) {
+            if (!isValidISO8601(dataCriacaoInicio)) {
+                return res.status(400).send(`data de inicio no formato incorreto`);
+            }
+
+            dataCriacaoInicio = new Date(dataCriacaoInicio)
+        }
+
+        if (dataCriacaoFim) {
+            if (!isValidISO8601(dataCriacaoFim)) {
+                return res.status(400).send(`data de Fim no formato incorreto`);
+            }
+            dataCriacaoFim = new Date(dataCriacaoFim)
+        }
+
+
+        if (dataModificacaoInicio) {
+            if (!isValidISO8601(dataModificacaoInicio)) {
+                return res.status(400).send(`data de modificacao Inicial no formato incorreto`);
+            }
+
+            dataModificacaoInicio = new Date(dataModificacaoInicio)
+        }
+
+
+        if (dataModificacaoFim) {
+            if (!isValidISO8601(dataModificacaoFim)) {
+                return res.status(400).send(`data de modificacao final no formato incorreto`);
+            }
+
+            dataModificacaoFim = new Date(dataModificacaoFim)
+        }
+
+
+
+
+        const filtro = await Prisma.tbl_usuarios.findMany({
+            where: {
+                AND: [
+
+                    {
+                        Nome: {
+                            contains: nome,
+                        }
+                    },
+                    { Email: { contains: email } },
+                    { Usuario_de_Acesso: { contains: nomeUsuario } },
+                    {
+                        Data_Criacao: {
+                            gt: dataCriacaoInicio,// Start date (inclusive)
+                            lt: dataCriacaoFim// End date (inclusive)
+                        }
+                    },
+
+                    {
+                        Data_Modificacao: {
+                            gt: dataModificacaoInicio,
+                            lt: dataModificacaoFim
+                        }
+                    }
+
+                ]
+            }
+        })
+
+        if (filtro.length == 0) {
+            return res.status(400).send("não foram encontrados usuarios com estes filtros")
+        }
+
+
+        res.render('relatorioUsuario', { filtroUsuario: filtro })
+
+
+    }
+
+
 
 }
 

@@ -1,0 +1,78 @@
+<%- include('includes/header') %>
+
+    <title>Relatorio De Usuarios</title>
+    </head>
+
+    <body>
+
+        <h1 style="font-size: 40px;">Relatorio De Usuarios</h1>
+        
+        <table border="" style="border: 5px solid black;border-collapse: collapse; height: 400px;width: 100%; margin-top: 60px; ">
+            <thead style="text-align: center;">
+                <tr style="font-size: 25px;">
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>Senha</th>
+                    <th>Usuario_de_Acesso</th>
+                    <th>Email</th>
+                    <th>Data_Criacao</th>
+                    <th>Nivel_Acesso</th>
+                    <th>Data_Modificacao</th>
+                </tr>
+            </thead>
+
+            <tbody style="text-align: center;">
+                <%filtroUsuario.forEach(element=> {
+                    %><tr style="font-size: 20px;">
+                        <td>
+                            <%= element.Id %>
+                        </td>
+                        <td>
+                            <%= element.Nome %>
+                        </td>
+                        <td>
+                            <%= element.Senha %>
+                        </td>
+                        <td>
+                            <%= element.Usuario_de_Acesso %>
+                        </td>
+                        <td>
+                            <%= element.Email %>
+                        </td>
+                        <td>
+                            <%= element.Data_Criacao %>
+                        </td>
+                        <td>
+                            <%= element.Nivel_Acesso %>
+                        </td>
+                        <td>
+                            <%= element.Data_Modificacao %>
+                        </td>
+                    </tr>
+                    <% }); %>
+
+
+
+
+            </tbody>
+
+
+
+
+
+
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <%- include('includes/footer') %>
