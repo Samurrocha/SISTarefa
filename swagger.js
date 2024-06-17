@@ -28,7 +28,7 @@ const options = {
         },
       ],
     },
-    apis: ['./routes/*.js'], // Caminho para os arquivos que contêm as definições das APIs
+    apis: ['src/routes/routesCrud.js'], // Caminho para os arquivos que contêm as definições das APIs
     
     
   };
