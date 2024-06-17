@@ -1,26 +1,27 @@
 //configuiração da documentaçao
 import swaggerUi from "swagger-ui-express"
 import swaggerSpec from "./swagger.js"
-import path  from 'path'
+import path from 'path'
 import express from 'express'
+import varAmbiente from 'dotenv';
+import app from "./app.js"
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 app.set('view engine', 'ejs');
-const paginaInicio  =  path.dirname('index');
-const relatorioUsuario  =  path.dirname('relatorioUsuario');
+const paginaInicio = path.dirname('index');
+const relatorioUsuario = path.dirname('relatorioUsuario');
+const relatorioTarefa = path.dirname('relatorioTarefa');
 app.set('views', path.join(paginaInicio, './src/views'));
-app.set('views', path.join(relatorioUsuario,'./src/views'))
+app.set('views', path.join(relatorioUsuario, './src/views'))
+app.set('views', path.join(relatorioTarefa, './src/views'))
 
 
 //configuração do app
-import app from "./app.js"
 
 
-import varAmbiente from 'dotenv';
 varAmbiente.config();
-
 
 
 try {

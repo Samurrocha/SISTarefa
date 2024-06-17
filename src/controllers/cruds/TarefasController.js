@@ -1,12 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import moment from "moment";
-const Prisma = new PrismaClient
+const Prisma = new PrismaClient()
 
 
 class TarefasController {
 
 
     async create(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
 
 
         const { dataInicio, dataTermino, descricao } = req.body;
@@ -67,15 +72,57 @@ class TarefasController {
 
     async read(req, res) {
 
+console.log(req.usuario_de_acesso)
+
+        if (req.nivel_de_acesso == "comum") {
+            console.log(req.userId)
+            const tarefas = await Prisma.tbl_usuariosTarefas.findMany({
+                where: {
+                    Id_Usuario: req.userId
+                }
+            })
+
+            if (tarefas.length < 1) {
+                return res.send(`não há tarefas para este usuario`)
+            }
+
+            const tarefasId = []
+            tarefas.forEach(element => {
+                tarefasId.push(element.Id_Tarefa)
+            });
+
+            try {
+                const userTarefas = await Prisma.tbl_tarefas.findMany({
+                    where: {
+                        Id: {
+                            in: tarefasId
+                        }
+                    }
+                });
+
+                return res.status(200).send(userTarefas)
+
+            } catch (error) { `erro do servidor ao buscar tarefas` }
+
+        }
+
+
         try {
             const allTasks = await Prisma.tbl_tarefas.findMany();
 
             res.send(allTasks);
-        } catch (error) { }
+        } catch (error) { `erro do servidor ao buscar tarefas` }
     };
 
 
     async update(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
+
+
 
         const id = parseInt(req.body.id)
         let { coluna, valor } = req.body;
@@ -139,6 +186,14 @@ class TarefasController {
 
 
     async delete(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
+
+
+
         const id = parseInt(req.body.id);
 
         const tarefa = await Prisma.tbl_tarefas.findUnique({
@@ -179,7 +234,7 @@ class TarefasController {
 
         if (concluida === "true") {
             concluida = Boolean("true")
-        } else if(concluida==="false"){ concluida = Boolean("") }
+        } else if (concluida === "false") { concluida = Boolean("") }
 
 
         function isValidISO8601(dateString) {
@@ -203,7 +258,7 @@ class TarefasController {
             dataCriacaoFim = new Date(dataCriacaoFim)
         }
 
-        
+
         if (usuario || usuarioDeAcesso || usuarioEmail) {
 
             const filtroUsuario = await Prisma.tbl_usuarios.findMany({
@@ -236,7 +291,7 @@ class TarefasController {
             filtroUsuario.forEach(element => {
                 idUsuarios.push(element.Id)
             });
-            
+
 
             const filtroUserTask = await Prisma.tbl_usuariosTarefas.findMany({
                 where: {
@@ -278,7 +333,7 @@ class TarefasController {
             }
         })
 
-       
+
         if (filtro.length == 0) {
             return res.status(400).send("não foram encontradas tarefas com estes filtros")
         }
@@ -290,7 +345,6 @@ class TarefasController {
 
 
     }
-
 
 
 }

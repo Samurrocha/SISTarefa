@@ -1,12 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import moment from "moment";
-const Prisma = new PrismaClient
+const Prisma = new PrismaClient()
 
 
 class ProjetosController {
 
 
     async create(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
 
         const idGerente = parseInt(req.body.idGerente)
         const { nome, dataInicio } = req.body;
@@ -17,7 +22,7 @@ class ProjetosController {
             if (!(prop in req.body)) {
                 return res.status(400).send(`É necessária a propriedade '${prop}'`);
             }
-            
+
         }
 
 
@@ -74,6 +79,59 @@ class ProjetosController {
 
     async read(req, res) {
 
+        if (req.nivel_de_acesso == "comum") {
+
+
+            const userTarefas = await Prisma.tbl_usuariosTarefas.findMany({
+                where: {
+                    Id_Usuario: req.userId
+                }
+            })
+
+            if (userTarefas.length < 1) {
+                return res.send(`não há projetos para este usuario`)
+            }
+
+            const tarefasId = []
+            userTarefas.forEach(element => {
+                tarefasId.push(element.Id_Tarefa)
+            });
+
+
+            const Tarefas = await Prisma.tbl_tarefas.findMany({
+                where: {
+                    Id: {
+                        in: tarefasId
+                    }
+                }
+
+            })
+
+            const idProjetos = []
+            Tarefas.forEach(element => {
+                idProjetos.push(element.Id_Projeto)
+            });
+
+            try {
+                const projetos = await Prisma.tbl_projetos.findMany({
+                    where: {
+                        Id: {
+                            in: idProjetos
+                        }
+                    }
+                })
+                return res.status(200).send(projetos)
+
+            } catch (error) { `erro do servidor ao buscar projetos : \n${error}` }
+
+
+
+        }
+
+
+
+
+
 
 
         try {
@@ -85,6 +143,11 @@ class ProjetosController {
 
 
     async update(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
 
 
         let { coluna, valor } = req.body;

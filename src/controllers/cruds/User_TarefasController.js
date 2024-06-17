@@ -1,12 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { parse } from "dotenv";
-const Prisma = new PrismaClient
+const Prisma = new PrismaClient()
 
 
-class Usuarios_TarefasController {
+class User_TarefasController {
 
 
     async create(req, res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
 
         const { funcaoUsuario } = req.body;
         const idUsuario = parseInt(req.body.idUsuario)
@@ -89,6 +93,11 @@ class Usuarios_TarefasController {
 
     async update(req, res) {
 
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
+
         const { coluna, valor } = req.body;
         const idUsuario = parseInt(req.body.idUsuario)
         const idTarefa =parseInt(req.body.idTarefa)
@@ -148,6 +157,12 @@ class Usuarios_TarefasController {
 
 
     async delete(req,res) {
+
+        if (req.nivel_de_acesso != "gerente" && req.nivel_de_acesso != "administrador") {
+            return res.status(403).json({ mensagem: 'Acesso negado. Esta operação requer privilégios de administrador.' });
+        }
+
+
         const idUsuario = parseInt(req.body.idUsuario);
         const idTarefa = parseInt(req.body.idTarefa);
 
@@ -187,7 +202,7 @@ class Usuarios_TarefasController {
 
 }
 
-export default new Usuarios_TarefasController();
+export default new User_TarefasController();
 
 
 
